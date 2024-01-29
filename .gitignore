@@ -1,2 +1,4 @@
 *.png 
 *.poly 
+__pycache__
+

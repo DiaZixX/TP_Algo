@@ -110,7 +110,7 @@ class Segment:
         #Check if segments are coliear
         denom = (x1 - x2)*(y3 - y4) - (y1 - y2)*(x3 - x4)
         if denom == 0:
-            return False
+            return None
 
         #Compute intersection using parameter t and u
         #self.x = x1 + t(x2 - x1) ; self.y = y1 + t(y2 - y1)
@@ -120,9 +120,9 @@ class Segment:
         u = - ((x1 - x2)*(y1 - y3) - (y1 - y2)*(x1 - x3))/denom
 
         if t >= 0 and t <= 1 and u >= 0 and u <= 1:
-            return True
+            return (x1 + t*(x2 - x1), y1 + t*(y2 - y1))
         else:
-            return False
+            return None
 
     def __str__(self):
         return "Segment([" + str(self.endpoints[0]) + ", " + \

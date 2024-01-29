@@ -20,7 +20,7 @@ def fusion(tab1, tab2):
     j = 0
     tab_ordonne = []
     while i != len(tab1) and j != len(tab2):
-        if tab1[i] < tab2[j]:
+        if tab1[i][1] < tab2[j][1]:
             tab_ordonne.append(tab1[i])
             i += 1
         else:
@@ -66,35 +66,32 @@ def trouve_inclusions(polygones):
         return []
     
     #vecteur d'inclusion
-    sortie = []
+    sortie = [-1 for _ in range(len(polygones))]
 
     #trie les polygones par aire croissante
-    polygones_tries = tri_fusion(polygones)
-
+    polygones_indices = [(i, pol) for i, pol in enumerate(polygones)]
+    polygones_tries = tri_fusion(polygones_indices)
+    print(polygones_tries)
     for i, pol1 in enumerate(polygones_tries):
         #on trace un segment entre un sommet du polygone et un point en dehors aligne verticalement
-        print(i)
-        segment = Segment([Point([pol1.points[0].coordinates[0], 0.0]), pol1.points[0]])
-        print(segment.endpoints[0].coordinates, segment.endpoints[1].coordinates)
-        inclusion = False
-        for j, pol2 in enumerate(polygones_tries[i+1:]):
+        segment = Segment([Point([pol1[1].points[0].coordinates[0], 0.0]), pol1[1].points[0]])
+        intersections = []
+        for pol2 in polygones_tries[i+1:]:
             #compte le nombre de segment du polygone intersecte
             count = 0
-            for seg in pol2.segments():
-                if segment.intersection_with(seg):
+            for seg in pol2[1].segments():
+                inter = segment.intersection_with(seg)
+                if inter and inter not in intersections:
                     count += 1
+                    intersections.append(inter)
+                    print("Intersection", pol1[0], "and", pol2[0], "at :", inter)
 
             #si pol1 est inclu dans pol2 on passe au prochain polygone
             if count % 2 == 1:
-                sortie.append(j + i + 1)
-                inclusion = True
+                sortie[pol1[0]] = pol2[0]
                 break
         
-        #si pol1 n'est inclu dans aucuns autres polygone alors on met -1
-        if not inclusion:
-            sortie.append(-1)
-        
-    return polygones_tries, sortie
+    return sortie
 
 
 def main():
@@ -108,9 +105,6 @@ def main():
         polygones = read_instance(fichier)
         inclusions = trouve_inclusions(polygones)
         print(inclusions)
-
-        for pol in inclusions[0]:
-            print(pol.area())
 
 
 if __name__ == "__main__":

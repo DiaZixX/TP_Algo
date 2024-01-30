@@ -71,7 +71,7 @@ def trouve_inclusions(polygones):
     #trie les polygones par aire croissante
     polygones_indices = [(i, pol) for i, pol in enumerate(polygones)]
     polygones_tries = tri_fusion(polygones_indices)
-    print(polygones_tries)
+    ### print(polygones_tries)
     for i, pol1 in enumerate(polygones_tries):
         #on trace un segment entre un sommet du polygone et un point en dehors aligne verticalement
         segment = Segment([Point([pol1[1].points[0].coordinates[0], 0.0]), pol1[1].points[0]])
@@ -84,7 +84,7 @@ def trouve_inclusions(polygones):
                 if inter and inter not in intersections:
                     count += 1
                     intersections.append(inter)
-                    print("Intersection", pol1[0], "and", pol2[0], "at :", inter)
+                    ### print("Intersection", pol1[0], "and", pol2[0], "at :", inter)
 
             #si pol1 est inclu dans pol2 on passe au prochain polygone
             if count % 2 == 1:
@@ -94,18 +94,21 @@ def trouve_inclusions(polygones):
     return sortie
 
 
-def main():
+def main(string):
     """
     charge chaque fichier .poly donne
     trouve les inclusions
     affiche l'arbre en format texte
     """
-
-    for fichier in sys.argv[1:]:
-        polygones = read_instance(fichier)
+    if string == "" :
+        for fichier in sys.argv[1:]:
+            polygones = read_instance(fichier)
+            inclusions = trouve_inclusions(polygones)
+            ### print(inclusions)
+    else :
+        polygones = read_instance(string)
         inclusions = trouve_inclusions(polygones)
-        print(inclusions)
-
+        ### print(inclusions)
 
 if __name__ == "__main__":
-    main()
+    main("")
